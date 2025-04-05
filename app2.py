@@ -45,7 +45,7 @@ if st.button("🔀 Combine Files"):
         st.success("🎉 Files combined successfully!")
 
         # Generate downloadable file name
-        file_name = f"{title_cleaned}_{formatted_date}.txt"
+        file_name = f"{title_cleaned}.txt"
 
         st.download_button(
             label="📥 Download Combined TXT",
