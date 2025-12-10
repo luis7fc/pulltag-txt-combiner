@@ -91,13 +91,16 @@ if st.button("🔀 Combine Files"):
 
     # Sum expected qty across *all uploaded txt files* by item code per lot (and job)
     master_qty_df = (
-        raw_txt_df.groupby(["Job Number", "Lot Number", "Item Code"], as_index=False)
-        .agg(
-            Description=("Description", "first"),
-            Master Qty=("Expected Qty", "sum"),
-        )
+        raw_txt_df
+        .groupby(["Job Number", "Lot Number", "Item Code"], as_index=False)
+        .agg({
+            "Description": "first",
+            "Expected Qty": "sum",
+        })
+        .rename(columns={"Expected Qty": "Master Qty"})
         .sort_values(["Job Number", "Lot Number", "Item Code"])
     )
+
 
     st.subheader("📦 Master Quantity Summary (Sum of all uploaded TXTs)")
     st.dataframe(master_qty_df, use_container_width=True)
@@ -141,7 +144,7 @@ if st.button("🔀 Combine Files"):
         expected_df = master_qty_df.rename(columns={"Master Qty": "Expected Qty"})[
             ["Item Code", "Job Number", "Lot Number", "Expected Qty"]
         ]
-
+        
         # Make join keys consistent
         for c in ["Job Number", "Lot Number"]:
             scan_grouped[c] = scan_grouped[c].astype(str)
